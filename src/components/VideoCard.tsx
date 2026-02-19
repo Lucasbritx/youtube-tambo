@@ -1,15 +1,19 @@
 import React from 'react';
+import { z } from 'zod';
 
-interface VideoCardProps {
-  rank: number;
-  thumbnail: string;
-  title: string;
-  channel: string;
-  views: string;
-  timeAgo: string;
-  rating: 'Excellent' | 'Good';
+export const videoCardSchema = z.object({
+  rank: z.number().describe('Video rank number'),
+  thumbnail: z.string().describe('URL of the video thumbnail'),
+  title: z.string().describe('Video title'),
+  channel: z.string().describe('Channel name'),
+  views: z.string().describe('View count (e.g., "2.0M views")'),
+  timeAgo: z.string().describe('Time since upload (e.g., "1 weeks ago")'),
+  rating: z.enum(['Excellent', 'Good']).describe('Video rating'),
+});
+
+export type VideoCardProps = z.infer<typeof videoCardSchema> & {
   onClick?: () => void;
-}
+};
 
 export const VideoCard: React.FC<VideoCardProps> = ({
   rank,

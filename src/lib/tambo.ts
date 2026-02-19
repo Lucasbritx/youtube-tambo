@@ -10,10 +10,16 @@
 
 import { Graph, graphSchema } from "@/components/tambo/graph";
 import { DataCard, dataCardSchema } from "@/components/ui/card-data";
+import { VideoCard, videoCardSchema } from "@/components/VideoCard";
 import {
   getCountryPopulations,
   getGlobalPopulationTrend,
 } from "@/services/population-stats";
+import {
+  getTrendingVideos,
+  getVideoAnalytics,
+  getVideoById,
+} from "@/services/youtube-videos";
 import type { TamboComponent } from "@tambo-ai/react";
 import { TamboTool } from "@tambo-ai/react";
 import { z } from "zod";
@@ -73,6 +79,66 @@ export const tools: TamboTool[] = [
       }),
     ),
   },
+  {
+    name: "trendingVideos",
+    description:
+      "Get trending tech videos from YouTube with optional filtering by category, sorting, and limiting results. Categories include: React, AI & ML, JavaScript, Tech Careers, Web Dev, Open Source",
+    tool: getTrendingVideos,
+    inputSchema: z.object({
+      category: z.string().optional().describe("Filter by video category"),
+      limit: z.number().optional().describe("Limit the number of results"),
+      sortBy: z.enum(["views", "recent", "rating"]).optional().describe("Sort videos by criteria"),
+    }),
+    outputSchema: z.array(
+      z.object({
+        id: z.string(),
+        rank: z.number(),
+        thumbnail: z.string(),
+        title: z.string(),
+        channel: z.string(),
+        views: z.string(),
+        timeAgo: z.string(),
+        rating: z.enum(["Excellent", "Good"]),
+        category: z.string().optional(),
+        description: z.string().optional(),
+      }),
+    ),
+  },
+  {
+    name: "videoAnalytics",
+    description:
+      "Get analytics summary for YouTube videos including total views, video counts, ratings, and available categories",
+    tool: getVideoAnalytics,
+    inputSchema: z.object({}),
+    outputSchema: z.object({
+      totalVideos: z.number(),
+      totalViews: z.string(),
+      excellentRating: z.number(),
+      averageViews: z.string(),
+      categories: z.array(z.string()),
+    }),
+  },
+  {
+    name: "getVideo",
+    description:
+      "Get detailed information about a specific video by its ID",
+    tool: getVideoById,
+    inputSchema: z.object({
+      id: z.string().describe("The video ID"),
+    }),
+    outputSchema: z.object({
+      id: z.string(),
+      rank: z.number(),
+      thumbnail: z.string(),
+      title: z.string(),
+      channel: z.string(),
+      views: z.string(),
+      timeAgo: z.string(),
+      rating: z.enum(["Excellent", "Good"]),
+      category: z.string().optional(),
+      description: z.string().optional(),
+    }).nullable(),
+  },
   // Add more tools here
 ];
 
@@ -98,5 +164,13 @@ export const components: TamboComponent[] = [
     component: DataCard,
     propsSchema: dataCardSchema,
   },
+  {
+    name: "VideoCard",
+    description:
+      "A component that displays a YouTube video card with thumbnail, title, channel name, views, upload time, rank badge, and rating. Perfect for showing trending videos or video recommendations.",
+    component: VideoCard,
+    propsSchema: videoCardSchema,
+  },
   // Add more components here
 ];
+
