@@ -1,7 +1,15 @@
 /**
  * @file youtube-videos.ts
- * @description Mock YouTube video data service for Tambo integration
+ * @description YouTube video data service with real API integration and mock fallback
  */
+
+import {
+  searchYouTubeVideos,
+  getTrendingVideosByCategory as getYouTubeTrendingByCategory,
+  getYouTubeVideoById,
+  getTimeAgo,
+  type YouTubeVideo,
+} from './youtube-api';
 
 export interface Video {
   id: string;
@@ -139,16 +147,80 @@ const mockVideos: Video[] = [
   }
 ];
 
+/**
+ * Check if YouTube API is configured
+ */
+function isYouTubeApiConfigured(): boolean {
+  return !!process.env.NEXT_PUBLIC_YOUTUBE_API_KEY && 
+         process.env.NEXT_PUBLIC_YOUTUBE_API_KEY !== 'your_youtube_api_key_here';
+}
+
+/**
+ * Convert YouTube API video to our Video format
+ */
+function convertYouTubeVideoToVideo(youtubeVideo: YouTubeVideo, rank: number): Video {
+  // Calculate rating based on like count and view count
+  const likes = parseInt(youtubeVideo.likeCount, 10) || 0;
+  const views = parseInt(youtubeVideo.viewCount.replace(/[^\d]/g, ''), 10) || 1;
+  const likeRatio = likes / views;
+  const rating: 'Excellent' | 'Good' = likeRatio > 0.05 ? 'Excellent' : 'Good';
+
+  return {
+    id: youtubeVideo.id,
+    rank,
+    thumbnail: youtubeVideo.thumbnails.high?.url || youtubeVideo.thumbnails.medium.url,
+    title: youtubeVideo.title,
+    channel: youtubeVideo.channelTitle,
+    views: youtubeVideo.viewCount,
+    timeAgo: getTimeAgo(youtubeVideo.publishedAt),
+    rating,
+    description: youtubeVideo.description,
+  };
+}
+
 export interface GetTrendingVideosParams {
   category?: string;
   limit?: number;
   sortBy?: 'views' | 'recent' | 'rating';
+  useRealApi?: boolean;
 }
 
 /**
  * Get trending tech videos with optional filtering
  */
 export async function getTrendingVideos(params?: GetTrendingVideosParams): Promise<Video[]> {
+  const useRealApi = params?.useRealApi !== false && isYouTubeApiConfigured();
+
+  if (useRealApi) {
+    try {
+      let youtubeVideos: YouTubeVideo[];
+
+      if (params?.category) {
+        // Get videos by category
+        youtubeVideos = await getYouTubeTrendingByCategory(
+          params.category,
+          params?.limit || 10
+        );
+      } else {
+        // Get general trending tech videos
+        youtubeVideos = await searchYouTubeVideos({
+          query: 'trending tech programming software development',
+          maxResults: params?.limit || 10,
+          order: params?.sortBy === 'recent' ? 'date' : 'viewCount',
+        });
+      }
+
+      // Convert to our format and add ranks
+      return youtubeVideos.map((video, index) => 
+        convertYouTubeVideoToVideo(video, index + 1)
+      );
+    } catch (error) {
+      console.error('Failed to fetch from YouTube API, falling back to mock data:', error);
+      // Fall through to mock data
+    }
+  }
+
+  // Use mock data (fallback or if API not configured)
   let videos = [...mockVideos];
 
   // Filter by category
@@ -183,14 +255,15 @@ export async function getTrendingVideos(params?: GetTrendingVideosParams): Promi
  * Get video analytics summary
  */
 export async function getVideoAnalytics() {
-  const totalViews = mockVideos.reduce((sum, video) => sum + parseViews(video.views), 0);
-  const excellentCount = mockVideos.filter(v => v.rating === 'Excellent').length;
+  const videos = await getTrendingVideos({ limit: 50 });
+  const totalViews = videos.reduce((sum, video) => sum + parseViews(video.views), 0);
+  const excellentCount = videos.filter(v => v.rating === 'Excellent').length;
   
   return {
-    totalVideos: mockVideos.length,
+    totalVideos: videos.length,
     totalViews: formatViews(totalViews),
     excellentRating: excellentCount,
-    averageViews: formatViews(totalViews / mockVideos.length),
+    averageViews: formatViews(totalViews / videos.length),
     categories: ['React', 'AI & ML', 'JavaScript', 'Tech Careers', 'Web Dev', 'Open Source']
   };
 }
@@ -199,6 +272,20 @@ export async function getVideoAnalytics() {
  * Get video by ID
  */
 export async function getVideoById(id: string): Promise<Video | null> {
+  const useRealApi = isYouTubeApiConfigured();
+
+  if (useRealApi) {
+    try {
+      const youtubeVideo = await getYouTubeVideoById(id);
+      if (youtubeVideo) {
+        return convertYouTubeVideoToVideo(youtubeVideo, 0);
+      }
+    } catch (error) {
+      console.error('Failed to fetch video from YouTube API:', error);
+    }
+  }
+
+  // Fallback to mock data
   return mockVideos.find(v => v.id === id) || null;
 }
 

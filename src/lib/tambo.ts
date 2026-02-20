@@ -82,12 +82,13 @@ export const tools: TamboTool[] = [
   {
     name: "trendingVideos",
     description:
-      "Get trending tech videos from YouTube with optional filtering by category, sorting, and limiting results. Categories include: React, AI & ML, JavaScript, Tech Careers, Web Dev, Open Source",
+      "Get trending tech videos from YouTube with optional filtering by category, sorting, and limiting results. Categories include: React, AI & ML, JavaScript, Tech Careers, Web Dev, Open Source. By default, this uses the real YouTube API if configured, otherwise falls back to mock data.",
     tool: getTrendingVideos,
     inputSchema: z.object({
       category: z.string().optional().describe("Filter by video category"),
       limit: z.number().optional().describe("Limit the number of results"),
       sortBy: z.enum(["views", "recent", "rating"]).optional().describe("Sort videos by criteria"),
+      useRealApi: z.boolean().optional().describe("Whether to use real YouTube API (default: true if API key is configured)"),
     }),
     outputSchema: z.array(
       z.object({
