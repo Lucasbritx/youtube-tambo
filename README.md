@@ -2,6 +2,9 @@
 
 A Next.js application with [Tambo AI](https://tambo.co) integration for intelligent YouTube video discovery. Ask Tambo about any topic and it will search YouTube, rate videos by relevance, and display them in a beautiful grid with an embedded video player.
 
+<img width="1414" height="752" alt="image" src="https://github.com/user-attachments/assets/0f38e89c-d8cd-497c-a6d1-1a21c0159372" />
+
+
 ## Features
 
 ✨ **AI-Powered Video Search** - Search YouTube for any topic using natural language
@@ -70,6 +73,10 @@ Try asking Tambo any of these:
 ```
 
 ### Workflow
+
+<img width="1384" height="705" alt="image" src="https://github.com/user-attachments/assets/fadd8adb-4506-4f94-b9c6-da4fa1a65a74" />
+<img width="1413" height="748" alt="image" src="https://github.com/user-attachments/assets/8dc3b88a-636d-40d2-a741-3ec8faf925e5" />
+
 
 1. **Search** - Ask Tambo to find videos about any topic
 2. **Browse** - View search results in a grid with video information
