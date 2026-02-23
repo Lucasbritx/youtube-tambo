@@ -5,9 +5,11 @@ import { Tab } from './Tab';
 import { TrendingTechVideos } from './TrendingTechVideos';
 import { ChatSidebar } from './ChatSidebar';
 import { ThreadContainer } from './tambo/thread-container';
+import { YouTubePlayer } from './YouTubePlayer';
 import { Search, User, ChevronDown } from 'lucide-react';
 import { VideoProvider, useVideoContext } from '@/contexts/VideoContext';
 import { registerVideoUpdateCallback, unregisterVideoUpdateCallback } from '@/services/video-actions';
+import type { Video } from '@/services/youtube-videos';
 
 type TabType = 'discover' | 'dashboard';
 
@@ -22,6 +24,7 @@ function DashboardContent({
 }: MyDashboardProps) {
   const [activeTab, setActiveTab] = React.useState<TabType>(initialTab);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const [selectedVideo, setSelectedVideo] = React.useState<Video | null>(null);
   const { videos, updateVideos } = useVideoContext();
 
   // Register callback for video updates from Tambo AI
@@ -91,7 +94,10 @@ function DashboardContent({
                   </div>
 
                   {/* Trending Videos */}
-                  <TrendingTechVideos videos={videos.length > 0 ? videos : undefined} />
+                  <TrendingTechVideos 
+                    videos={videos.length > 0 ? videos : undefined} 
+                    onVideoClick={setSelectedVideo}
+                  />
                 </div>
               )}
 
@@ -107,6 +113,12 @@ function DashboardContent({
 
         {/* Chat Sidebar */}
         {showChat && <ChatSidebar />}
+
+        {/* YouTube Player Modal */}
+        <YouTubePlayer 
+          video={selectedVideo} 
+          onClose={() => setSelectedVideo(null)} 
+        />
       </div>
     </ThreadContainer>
   );

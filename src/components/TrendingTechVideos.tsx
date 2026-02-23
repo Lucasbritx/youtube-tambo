@@ -8,7 +8,7 @@ import { getTrendingVideos, type Video } from '@/services/youtube-videos';
 interface TrendingTechVideosProps {
   videos?: Video[];
   categories?: string[];
-  onVideoClick?: (videoId: string) => void;
+  onVideoClick?: (video: Video) => void;
   onCategoryClick?: (category: string) => void;
 }
 
@@ -91,19 +91,19 @@ export const TrendingTechVideos: React.FC<TrendingTechVideosProps> = ({
             No videos found{selectedCategory ? ` for ${selectedCategory}` : ''}
           </div>
         ) : (
-          videos.map((video) => (
-            <VideoCard
-              key={video.id}
-              rank={video.rank}
-              thumbnail={video.thumbnail}
-              title={video.title}
-              channel={video.channel}
-              views={video.views}
-              timeAgo={video.timeAgo}
-              rating={video.rating}
-              onClick={() => onVideoClick?.(video.id)}
-            />
-          ))
+           videos.map((video) => (
+             <VideoCard
+               key={video.id}
+               rank={video.rank}
+               thumbnail={video.thumbnail}
+               title={video.title}
+               channel={video.channel}
+               views={video.views}
+               timeAgo={video.timeAgo}
+               rating={video.rating}
+               onClick={() => onVideoClick?.(video)}
+             />
+           ))
         )}
       </VideoGrid>
     </div>
