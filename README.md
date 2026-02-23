@@ -1,127 +1,190 @@
-# Tambo Template
+# AI-Powered YouTube Video Search with Tambo
 
-A starter Next.js app with [Tambo AI](https://tambo.co) integration for building generative UI/UX applications. Tambo enables AI to dynamically generate and control React components in real time.
+A Next.js application with [Tambo AI](https://tambo.co) integration for intelligent YouTube video discovery. Ask Tambo about any topic and it will search YouTube, rate videos by relevance, and display them in a beautiful grid with an embedded video player.
 
-## Get Started
+## Features
 
-1. Create a new project:
+✨ **AI-Powered Video Search** - Search YouTube for any topic using natural language
+🎯 **Smart Video Ranking** - AI rates and filters videos for relevance
+▶️ **Embedded Video Player** - Click any thumbnail to watch with full YouTube controls
+🔄 **Real-time Updates** - Watch video grid update instantly as Tambo searches
+💬 **Generative AI Chat** - Talk to Tambo to discover, filter, and explore videos
+🎨 **Modern UI** - Clean, responsive dashboard with dark mode support
+🌐 **YouTube Integration** - Real-time video data from YouTube API
+🧠 **Smart Behavior** - Tambo searches immediately without asking follow-up questions
+
+## Quick Start
+
+### 1. Setup Environment
 
 ```bash
-npm create-tambo@latest my-tambo-app
+# Copy example env file
+cp example.env.local .env.local
 ```
 
-2. Install dependencies:
+Then add your API keys:
+```env
+NEXT_PUBLIC_TAMBO_API_KEY=your_tambo_api_key
+NEXT_PUBLIC_YOUTUBE_API_KEY=your_youtube_api_key  # Optional - uses mock data if not provided
+```
+
+Get your API keys:
+- **Tambo API Key**: [tambo.co/dashboard](https://tambo.co/dashboard)
+- **YouTube API Key**: [Google Cloud Console](https://console.cloud.google.com/apis/credentials)
+
+### 2. Install Dependencies
 
 ```bash
 npm install
 ```
 
-3. Initialize Tambo (sets up your API key):
-
-```bash
-npx tambo init
-```
-
-Or rename `example.env.local` to `.env.local` and add your Tambo API key (get one free at [tambo.co/dashboard](https://tambo.co/dashboard)).
-
-4. Start the dev server:
+### 3. Start Development Server
 
 ```bash
 npm run dev
 ```
 
-Open [localhost:3000](http://localhost:3000) to use the app.
+Open [localhost:3000](http://localhost:3000) in your browser.
 
-## Routes
+## 🎯 How to Use
+
+### Main Routes
 
 | Route | Description |
 |-------|-------------|
-| `/` | Home page with setup checklist and links to demos |
-| `/chat` | Full chat interface with MCP support, voice input, and generative components |
-| `/interactables` | Interactive demo with a chat sidebar controlling a settings panel |
+| `/` | Full chat interface with video search and player |
 
-## Project Structure
+### Example Queries
+
+Try asking Tambo any of these:
+
+```
+"Show me React tutorials"
+"Find videos about machine learning for beginners"
+"I want to learn Python async programming"
+"Best practices for system design interviews"
+"Web development tips and tricks"
+"How to pass Amazon software engineer interviews"
+"TypeScript advanced patterns"
+"Next.js full-stack development"
+```
+
+### Workflow
+
+1. **Search** - Ask Tambo to find videos about any topic
+2. **Browse** - View search results in a grid with video information
+3. **Watch** - Click any thumbnail to watch the video with full controls
+4. **Refine** - Ask Tambo to search again with different terms
+5. **Discover** - Get recommendations and explore new topics
+
+## 📚 Documentation
+
+### Core Features
+
+- **[QUICK_START.md](./QUICK_START.md)** - Quick reference with example queries
+- **[SEARCH_BEHAVIOR_FIX.md](./SEARCH_BEHAVIOR_FIX.md)** - How Tambo behavior was optimized for immediate search
+- **[VIDEO_PLAYER_IMPLEMENTATION.md](./VIDEO_PLAYER_IMPLEMENTATION.md)** - YouTube video player implementation details
+
+### Architecture & Integration
+
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Component hierarchy and data flow
+- **[VIDEO_UPDATE_IMPLEMENTATION.md](./VIDEO_UPDATE_IMPLEMENTATION.md)** - How videos update in real-time
+- **[AI_VIDEO_SEARCH.md](./AI_VIDEO_SEARCH.md)** - AI-powered video search system
+
+### YouTube API Setup
+
+- **[YOUTUBE_API_SETUP.md](./YOUTUBE_API_SETUP.md)** - How to configure YouTube API
+- **[YOUTUBE_API_STATUS.md](./YOUTUBE_API_STATUS.md)** - API status and troubleshooting
+- **[YOUTUBE_DASHBOARD.md](./YOUTUBE_DASHBOARD.md)** - Dashboard setup and monitoring
+
+### Development Guide
+
+- **[CLAUDE.md](./CLAUDE.md)** - Development guidelines for the Tambo template
+- **[TEST_QUERIES.md](./TEST_QUERIES.md)** - Test queries and expected results
+
+## 🏗️ Project Structure
 
 ```
 src/
 ├── app/
-│   ├── page.tsx                 # Home page with setup checklist
-│   ├── layout.tsx               # Root layout (Geist fonts, global styles)
-│   ├── globals.css              # Global styles and CSS variables
-│   ├── chat/
-│   │   └── page.tsx             # Chat page with TamboProvider and MCP
-│   └── interactables/
-│       ├── page.tsx             # Interactables demo page
-│       └── components/
-│           └── settings-panel.tsx  # AI-controlled settings form
+│   ├── page.tsx                 # Home page
+│   ├── layout.tsx               # Root layout with providers
+│   ├── globals.css              # Global styles
+│   └── chat/
+│       └── page.tsx             # Main chat interface
 ├── components/
-│   ├── ApiKeyCheck.tsx          # API key validation UI
-│   ├── tambo/                   # Tambo-specific components
-│   │   ├── message-thread-full.tsx  # Full chat layout
-│   │   ├── message-input.tsx        # Input with toolbar, file upload, MCP
-│   │   ├── message.tsx              # Single message display
-│   │   ├── graph.tsx                # Generative chart component (bar/line/pie)
-│   │   ├── mcp-components.tsx       # MCP prompt and resource UI
-│   │   ├── mcp-config-modal.tsx     # MCP server configuration modal
-│   │   ├── dictation-button.tsx     # Voice input button
-│   │   ├── elicitation-ui.tsx       # MCP elicitation forms
-│   │   ├── message-suggestions.tsx  # AI-powered suggestions
-│   │   ├── thread-history.tsx       # Thread history sidebar
-│   │   └── ...                      # Additional UI components
+│   ├── MyDashboard.tsx          # Main dashboard container
+│   ├── TrendingTechVideos.tsx   # Video grid and search
+│   ├── VideoCard.tsx            # Individual video card
+│   ├── YouTubePlayer.tsx        # Video player modal ⭐ NEW
+│   ├── ChatSidebar.tsx          # Chat sidebar
+│   ├── Tab.tsx                  # Tab navigation
+│   ├── VideoGrid.tsx            # Grid layout
+│   ├── VideoDescription.tsx     # Video metadata
+│   ├── tambo/                   # Tambo components
+│   │   ├── message-thread-full.tsx
+│   │   ├── message-input.tsx
+│   │   ├── message.tsx
+│   │   ├── graph.tsx
+│   │   └── ...
 │   └── ui/
-│       └── card-data.tsx        # Generative DataCard component
+│       └── card-data.tsx
 ├── lib/
-│   ├── tambo.ts                 # Central config: component and tool registration
-│   ├── thread-hooks.ts          # Custom thread management hooks
-│   ├── use-anonymous-user-key.ts  # Anonymous user ID persistence
-│   └── utils.ts                 # Utility functions
-└── services/
-    └── population-stats.ts      # Demo data service (population statistics)
+│   ├── tambo.ts                 # AI component & tool registration ⭐ UPDATED
+│   ├── system-prompt.ts         # System prompt guide ⭐ NEW
+│   ├── thread-hooks.ts          # Thread management
+│   ├── use-anonymous-user-key.ts
+│   └── utils.ts
+├── services/
+│   ├── youtube-videos.ts        # Video data service
+│   ├── youtube-api.ts           # YouTube API integration
+│   ├── video-actions.ts         # Video update callbacks
+│   └── population-stats.ts      # Demo data
+└── contexts/
+    └── VideoContext.tsx         # Video state management
 ```
 
-## Features
+## 🔧 Configuration
 
-### Generative Components
+### AI Search Behavior
 
-AI dynamically renders registered React components based on user input. The template includes two example components:
+The AI is configured to:
+- **Search immediately** without asking follow-up questions
+- **Extract intent** from user messages automatically
+- **Rate results** using AI for relevance ranking
+- **Update UI** in real-time as results arrive
 
-- **Graph** - Recharts-based data visualization (bar, line, pie charts)
-- **DataCard** - Selectable cards with links and descriptions
+See [SEARCH_BEHAVIOR_FIX.md](./SEARCH_BEHAVIOR_FIX.md) for implementation details.
 
-### Tools
+### Register New AI Tools
 
-AI can invoke registered tools to fetch data or perform actions. The template includes:
+Tools are registered in `src/lib/tambo.ts`:
 
-- **countryPopulation** - Country population stats with filtering by continent, sorting, and limits
-- **globalPopulation** - Global population trends with year range filtering
+```tsx
+export const tools: TamboTool[] = [
+  {
+    name: "searchVideos",
+    description: "PRIMARY TOOL FOR VIDEO SEARCH. ALWAYS use immediately...",
+    tool: searchAndUpdateVideos,
+    inputSchema: z.object({
+      query: z.string().describe("User's search intent"),
+      limit: z.number().optional().default(8),
+      sortBy: z.enum(["relevance", "date", "viewCount", "rating"]).optional(),
+      aiRating: z.boolean().optional().default(true),
+    }),
+    outputSchema: z.object({
+      success: z.boolean(),
+      message: z.string(),
+      query: z.string(),
+      videoCount: z.number(),
+      topVideos: z.array(z.object({...})),
+    }),
+  },
+  // Add more tools here
+];
+```
 
-### MCP (Model Context Protocol)
-
-Full MCP support for connecting to external tool servers:
-
-- Configure MCP servers via the in-app modal (HTTP/SSE transport)
-- Browse and insert MCP prompts and resources
-- Elicitation UI for multi-step MCP forms
-
-### Voice Input
-
-Speech-to-text via the `DictationButton` component using the `useTamboVoice` hook.
-
-### Interactables
-
-Components wrapped with `withTamboInteractable` allow AI to control their state directly. The demo shows a settings panel whose fields update in real time as the AI responds.
-
-### Streaming
-
-Real-time streaming of AI-generated content with progressive UI updates and generation stage indicators.
-
-### Thread Management
-
-Full thread history sidebar with search, thread switching, and new thread creation.
-
-## Customizing
-
-### Register Components
+### Add New Components
 
 Components are registered in `src/lib/tambo.ts`:
 
@@ -129,117 +192,141 @@ Components are registered in `src/lib/tambo.ts`:
 export const components: TamboComponent[] = [
   {
     name: "Graph",
-    description:
-      "A component that renders various types of charts (bar, line, pie) using Recharts.",
+    description: "A component that renders various types of charts",
     component: Graph,
     propsSchema: graphSchema,
-  },
-  {
-    name: "DataCard",
-    description:
-      "A component that displays options as clickable cards with links and summaries.",
-    component: DataCard,
-    propsSchema: dataCardSchema,
   },
   // Add more components here
 ];
 ```
 
-To add a new component:
+## 🎬 Key Components
 
-1. Create the component in `src/components/tambo/`
-2. Define a Zod schema for its props
-3. Register it in the `components` array in `src/lib/tambo.ts`
+### YouTubePlayer
+- **File**: `src/components/YouTubePlayer.tsx`
+- **Purpose**: Display embedded YouTube videos in a modal
+- **Features**:
+  - Full YouTube embed with native controls
+  - Autoplay enabled
+  - Video metadata display
+  - Dark theme design
+  - Close button and responsive layout
 
-You can also install pre-built components:
+### TrendingTechVideos
+- **File**: `src/components/TrendingTechVideos.tsx`
+- **Purpose**: Display video grid and handle search
+- **Features**:
+  - Category filtering
+  - Real-time video updates
+  - Click to play functionality
+  - Loading states
 
-```bash
-npx tambo add graph
-```
+### MyDashboard
+- **File**: `src/components/MyDashboard.tsx`
+- **Purpose**: Main container for dashboard and chat
+- **Features**:
+  - Tab navigation (Discover/Dashboard)
+  - Video context management
+  - Chat sidebar integration
+  - Player state management
 
-More info: [Generative Components docs](https://docs.tambo.co/concepts/generative-interfaces/generative-components)
-
-### Register Tools
-
-Tools are defined with `inputSchema` and `outputSchema`:
-
-```tsx
-export const tools: TamboTool[] = [
-  {
-    name: "globalPopulation",
-    description: "A tool to get global population trends with optional year range filtering",
-    tool: getGlobalPopulationTrend,
-    inputSchema: z.object({
-      startYear: z.number().optional(),
-      endYear: z.number().optional(),
-    }),
-    outputSchema: z.array(
-      z.object({
-        year: z.number(),
-        population: z.number(),
-        growthRate: z.number(),
-      }),
-    ),
-  },
-];
-```
-
-More info: [Tools docs](https://docs.tambo.co/concepts/tools)
-
-### TamboProvider
-
-The `TamboProvider` wraps each page that uses Tambo (see `src/app/chat/page.tsx`):
-
-```tsx
-<TamboProvider
-  apiKey={process.env.NEXT_PUBLIC_TAMBO_API_KEY!}
-  components={components}
-  tools={tools}
-  tamboUrl={process.env.NEXT_PUBLIC_TAMBO_URL}
-  mcpServers={mcpServers}
-  userKey={userKey}
->
-  {children}
-</TamboProvider>
-```
-
-### Display Components Outside the Chat
-
-Access rendered components from the thread to display them anywhere:
-
-```tsx
-const { thread } = useTambo();
-const latestComponent =
-  thread?.messages[thread.messages.length - 1]?.renderedComponent;
-
-return (
-  <div>
-    {latestComponent && (
-      <div className="my-custom-wrapper">{latestComponent}</div>
-    )}
-  </div>
-);
-```
-
-## Scripts
+## 📋 Scripts
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server |
+| `npm run dev` | Start development server (port 3000) |
 | `npm run build` | Build for production |
 | `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
+| `npm run lint` | Run ESLint checks |
 | `npm run lint:fix` | Run ESLint with auto-fix |
 
-## Tech Stack
+## 🛠️ Tech Stack
 
+### Framework & UI
 - [Next.js](https://nextjs.org) 15 with App Router
 - [React](https://react.dev) 19
-- [Tambo AI SDK](https://tambo.co) (`@tambo-ai/react`)
-- [Tailwind CSS](https://tailwindcss.com) v4
-- [Recharts](https://recharts.org) for data visualization
-- [TipTap](https://tiptap.dev) for rich text editing
-- [Zod](https://zod.dev) for schema validation
-- [Framer Motion](https://motion.dev) for animations
+- [TypeScript](https://www.typescriptlang.org/)
 
-For full documentation, visit [docs.tambo.co](https://docs.tambo.co).
+### AI & Integration
+- [Tambo AI SDK](https://tambo.co) (`@tambo-ai/react`)
+- [YouTube Data API v3](https://developers.google.com/youtube/v3)
+
+### Styling & Components
+- [Tailwind CSS](https://tailwindcss.com) v4
+- [Lucide React](https://lucide.dev) - Icons
+- [Recharts](https://recharts.org) - Data visualization
+
+### Validation & Utils
+- [Zod](https://zod.dev) - Schema validation
+- [Framer Motion](https://motion.dev) - Animations
+
+## 🚀 Performance Tips
+
+1. **Limit videos per search**: Default is 8 videos (configurable)
+2. **AI ranking enabled**: Uses AI to filter low-relevance videos
+3. **Caching**: Video data is cached in component state
+4. **Lazy loading**: Videos load as they come into view
+
+## 🐛 Troubleshooting
+
+### Videos not showing?
+- Check that `NEXT_PUBLIC_YOUTUBE_API_KEY` is set in `.env.local`
+- Verify the YouTube API is enabled in Google Cloud Console
+- Check browser console for API errors
+
+### Search not working?
+- Verify `NEXT_PUBLIC_TAMBO_API_KEY` is set correctly
+- Check that Tambo API is accessible from your network
+- Ensure the chat has loaded completely
+
+### Player not playing video?
+- Check that video ID is valid (should be a YouTube video ID)
+- Verify YouTube hasn't removed the video
+- Clear browser cache and try again
+
+### Can't find expected videos?
+- Try more specific search queries
+- Check the AI rating threshold in `AIVideoSearch.ts`
+- Disable AI rating if mock data is being used
+
+## 📖 Resources
+
+### External Documentation
+- **[Tambo Documentation](https://docs.tambo.co)** - Complete Tambo SDK docs
+- **[YouTube API Docs](https://developers.google.com/youtube/v3)** - YouTube API reference
+- **[Next.js Documentation](https://nextjs.org/docs)** - Next.js guide
+- **[React Documentation](https://react.dev)** - React reference
+- **[Tailwind CSS](https://tailwindcss.com/docs)** - Styling guide
+
+### Project Files
+- **[QUICK_START.md](./QUICK_START.md)** - Quick reference guide
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture
+- **[AI_VIDEO_SEARCH.md](./AI_VIDEO_SEARCH.md)** - Search algorithm details
+- **[SEARCH_BEHAVIOR_FIX.md](./SEARCH_BEHAVIOR_FIX.md)** - Tambo optimization
+- **[VIDEO_PLAYER_IMPLEMENTATION.md](./VIDEO_PLAYER_IMPLEMENTATION.md)** - Player details
+- **[YOUTUBE_API_SETUP.md](./YOUTUBE_API_SETUP.md)** - API configuration
+- **[TEST_QUERIES.md](./TEST_QUERIES.md)** - Test examples
+
+## 💡 Contributing
+
+To contribute improvements:
+
+1. Create a feature branch
+2. Make your changes
+3. Update relevant documentation files
+4. Test thoroughly
+5. Submit a pull request
+
+## 📝 License
+
+MIT - Feel free to use this project as a starting point for your own applications.
+
+## 🤝 Support
+
+- **Issues**: Check existing documentation files
+- **Tambo Help**: [Tambo Discord](https://tambo.co/community)
+- **YouTube API Issues**: [Google Cloud Support](https://cloud.google.com/support)
+
+---
+
+**Happy video searching!** 🎥✨
