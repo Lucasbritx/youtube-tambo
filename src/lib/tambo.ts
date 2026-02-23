@@ -79,17 +79,17 @@ export const tools: TamboTool[] = [
       }),
     ),
   },
-  {
-    name: "searchVideos",
-    description:
-      "Search YouTube for videos based on ANY user query and UPDATE the main video list in the Discover tab. This tool uses AI to rate and filter videos for relevance. Use this whenever the user asks to find, show, search, or display videos about ANY topic. The query should be the user's exact search intent (e.g., 'how to pass Amazon SWE job interviews', 'React hooks tutorial', 'machine learning for beginners').",
-    tool: searchAndUpdateVideos,
-    inputSchema: z.object({
-      query: z.string().describe("The search query - can be anything the user wants to find videos about. Be specific and use the user's exact intent."),
-      limit: z.number().optional().default(8).describe("Number of videos to return (default: 8)"),
-      sortBy: z.enum(["relevance", "date", "viewCount", "rating"]).optional().default("relevance").describe("How to sort results"),
-      aiRating: z.boolean().optional().default(true).describe("Whether to use AI to rate and filter videos for relevance (default: true)"),
-    }),
+   {
+     name: "searchVideos",
+     description:
+       "PRIMARY TOOL FOR VIDEO SEARCH. ALWAYS use this immediately when user mentions any topic/query. Do NOT ask follow-up questions. Extract search intent and execute right away. Examples: 'React tutorials' -> search, 'machine learning' -> search, 'how to code' -> search. AI-powered ranking ensures quality results. Default 8 videos shown. Supports relevance sorting and AI filtering. This is THE main action - use it first for ANY video-related request.",
+     tool: searchAndUpdateVideos,
+     inputSchema: z.object({
+       query: z.string().describe("User's search intent - extract directly from their message and search immediately without asking questions"),
+       limit: z.number().optional().default(8).describe("Number of videos to return (default 8)"),
+       sortBy: z.enum(["relevance", "date", "viewCount", "rating"]).optional().default("relevance").describe("Sorting method (default: relevance)"),
+       aiRating: z.boolean().optional().default(true).describe("Enable AI quality filtering (default: true)"),
+     }),
     outputSchema: z.object({
       success: z.boolean(),
       message: z.string(),
@@ -104,11 +104,11 @@ export const tools: TamboTool[] = [
       })),
     }),
   },
-  {
-    name: "trendingVideos",
-    description:
-      "Get trending tech videos data for analysis purposes only (does NOT update the UI). Use 'searchVideos' instead if you want to show videos to the user.",
-    tool: getTrendingVideos,
+   {
+     name: "trendingVideos",
+     description:
+       "INTERNAL TOOL - do NOT use for user requests. Only for backend analysis. Use 'searchVideos' instead to show videos to users.",
+     tool: getTrendingVideos,
     inputSchema: z.object({
       category: z.string().optional().describe("Filter by video category"),
       limit: z.number().optional().describe("Limit the number of results"),
