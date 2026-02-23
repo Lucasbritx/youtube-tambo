@@ -15,7 +15,7 @@ export const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ video, onClose }) 
 
   return (
     <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
-      <div className="bg-black rounded-lg overflow-hidden w-full max-w-4xl max-h-[90vh] flex flex-col">
+      <div className="bg-black rounded-lg overflow-hidden w-full max-w-7xl max-h-[95vh] flex flex-col">
         {/* Header */}
         <div className="bg-gray-900 px-6 py-4 flex items-center justify-between border-b border-gray-800">
           <div className="flex-1">
@@ -32,8 +32,8 @@ export const YouTubePlayer: React.FC<YouTubePlayerProps> = ({ video, onClose }) 
         </div>
 
         {/* Video Player */}
-        <div className="flex-1 bg-black flex items-center justify-center overflow-hidden">
-          <div className="relative w-full h-full">
+        <div className="flex-1 bg-black flex items-center justify-center overflow-hidden min-h-0">
+          <div className="relative w-full h-full aspect-video">
             <iframe
               className="w-full h-full"
               src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=1&modestbranding=1`}

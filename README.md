@@ -86,28 +86,16 @@ Try asking Tambo any of these:
 
 ## 📚 Documentation
 
-### Core Features
-
 - **[QUICK_START.md](./QUICK_START.md)** - Quick reference with example queries
-- **[SEARCH_BEHAVIOR_FIX.md](./SEARCH_BEHAVIOR_FIX.md)** - How Tambo behavior was optimized for immediate search
 - **[VIDEO_PLAYER_IMPLEMENTATION.md](./VIDEO_PLAYER_IMPLEMENTATION.md)** - YouTube video player implementation details
 
 ### Architecture & Integration
 
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Component hierarchy and data flow
-- **[VIDEO_UPDATE_IMPLEMENTATION.md](./VIDEO_UPDATE_IMPLEMENTATION.md)** - How videos update in real-time
-- **[AI_VIDEO_SEARCH.md](./AI_VIDEO_SEARCH.md)** - AI-powered video search system
-
-### YouTube API Setup
-
-- **[YOUTUBE_API_SETUP.md](./YOUTUBE_API_SETUP.md)** - How to configure YouTube API
-- **[YOUTUBE_API_STATUS.md](./YOUTUBE_API_STATUS.md)** - API status and troubleshooting
-- **[YOUTUBE_DASHBOARD.md](./YOUTUBE_DASHBOARD.md)** - Dashboard setup and monitoring
 
 ### Development Guide
 
 - **[CLAUDE.md](./CLAUDE.md)** - Development guidelines for the Tambo template
-- **[TEST_QUERIES.md](./TEST_QUERIES.md)** - Test queries and expected results
 
 ## 🏗️ Project Structure
 
@@ -160,8 +148,6 @@ The AI is configured to:
 - **Extract intent** from user messages automatically
 - **Rate results** using AI for relevance ranking
 - **Update UI** in real-time as results arrive
-
-See [SEARCH_BEHAVIOR_FIX.md](./SEARCH_BEHAVIOR_FIX.md) for implementation details.
 
 ### Register New AI Tools
 
@@ -305,14 +291,6 @@ export const components: TamboComponent[] = [
 - **[React Documentation](https://react.dev)** - React reference
 - **[Tailwind CSS](https://tailwindcss.com/docs)** - Styling guide
 
-### Project Files
-- **[QUICK_START.md](./QUICK_START.md)** - Quick reference guide
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System architecture
-- **[AI_VIDEO_SEARCH.md](./AI_VIDEO_SEARCH.md)** - Search algorithm details
-- **[SEARCH_BEHAVIOR_FIX.md](./SEARCH_BEHAVIOR_FIX.md)** - Tambo optimization
-- **[VIDEO_PLAYER_IMPLEMENTATION.md](./VIDEO_PLAYER_IMPLEMENTATION.md)** - Player details
-- **[YOUTUBE_API_SETUP.md](./YOUTUBE_API_SETUP.md)** - API configuration
-- **[TEST_QUERIES.md](./TEST_QUERIES.md)** - Test examples
 
 ## 💡 Contributing
 
