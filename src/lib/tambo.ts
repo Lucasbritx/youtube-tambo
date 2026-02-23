@@ -10,7 +10,6 @@
 
 import { Graph, graphSchema } from "@/components/tambo/graph";
 import { DataCard, dataCardSchema } from "@/components/ui/card-data";
-import { VideoCard, videoCardSchema } from "@/components/VideoCard";
 import {
   getCountryPopulations,
   getGlobalPopulationTrend,
@@ -20,6 +19,7 @@ import {
   getVideoAnalytics,
   getVideoById,
 } from "@/services/youtube-videos";
+import { searchAndUpdateVideos } from "@/services/video-actions";
 import type { TamboComponent } from "@tambo-ai/react";
 import { TamboTool } from "@tambo-ai/react";
 import { z } from "zod";
@@ -80,9 +80,34 @@ export const tools: TamboTool[] = [
     ),
   },
   {
+    name: "searchVideos",
+    description:
+      "Search YouTube for videos based on ANY user query and UPDATE the main video list in the Discover tab. This tool uses AI to rate and filter videos for relevance. Use this whenever the user asks to find, show, search, or display videos about ANY topic. The query should be the user's exact search intent (e.g., 'how to pass Amazon SWE job interviews', 'React hooks tutorial', 'machine learning for beginners').",
+    tool: searchAndUpdateVideos,
+    inputSchema: z.object({
+      query: z.string().describe("The search query - can be anything the user wants to find videos about. Be specific and use the user's exact intent."),
+      limit: z.number().optional().default(8).describe("Number of videos to return (default: 8)"),
+      sortBy: z.enum(["relevance", "date", "viewCount", "rating"]).optional().default("relevance").describe("How to sort results"),
+      aiRating: z.boolean().optional().default(true).describe("Whether to use AI to rate and filter videos for relevance (default: true)"),
+    }),
+    outputSchema: z.object({
+      success: z.boolean(),
+      message: z.string(),
+      query: z.string(),
+      videoCount: z.number(),
+      aiRated: z.boolean(),
+      topVideos: z.array(z.object({
+        title: z.string(),
+        channel: z.string(),
+        views: z.string(),
+        relevanceScore: z.string().optional(),
+      })),
+    }),
+  },
+  {
     name: "trendingVideos",
     description:
-      "Get trending tech videos from YouTube with optional filtering by category, sorting, and limiting results. Categories include: React, AI & ML, JavaScript, Tech Careers, Web Dev, Open Source. By default, this uses the real YouTube API if configured, otherwise falls back to mock data.",
+      "Get trending tech videos data for analysis purposes only (does NOT update the UI). Use 'searchVideos' instead if you want to show videos to the user.",
     tool: getTrendingVideos,
     inputSchema: z.object({
       category: z.string().optional().describe("Filter by video category"),
@@ -164,13 +189,6 @@ export const components: TamboComponent[] = [
       "A component that displays options as clickable cards with links and summaries with the ability to select multiple items.",
     component: DataCard,
     propsSchema: dataCardSchema,
-  },
-  {
-    name: "VideoCard",
-    description:
-      "A component that displays a YouTube video card with thumbnail, title, channel name, views, upload time, rank badge, and rating. Perfect for showing trending videos or video recommendations.",
-    component: VideoCard,
-    propsSchema: videoCardSchema,
   },
   // Add more components here
 ];

@@ -6,6 +6,8 @@ import { TrendingTechVideos } from './TrendingTechVideos';
 import { ChatSidebar } from './ChatSidebar';
 import { ThreadContainer } from './tambo/thread-container';
 import { Search, User, ChevronDown } from 'lucide-react';
+import { VideoProvider, useVideoContext } from '@/contexts/VideoContext';
+import { registerVideoUpdateCallback, unregisterVideoUpdateCallback } from '@/services/video-actions';
 
 type TabType = 'discover' | 'dashboard';
 
@@ -14,12 +16,21 @@ interface MyDashboardProps {
   initialTab?: TabType;
 }
 
-export const MyDashboard: React.FC<MyDashboardProps> = ({ 
+function DashboardContent({ 
   showChat = true,
   initialTab = 'discover'
-}) => {
+}: MyDashboardProps) {
   const [activeTab, setActiveTab] = React.useState<TabType>(initialTab);
   const [searchQuery, setSearchQuery] = React.useState('');
+  const { videos, updateVideos } = useVideoContext();
+
+  // Register callback for video updates from Tambo AI
+  React.useEffect(() => {
+    registerVideoUpdateCallback(updateVideos);
+    return () => {
+      unregisterVideoUpdateCallback();
+    };
+  }, [updateVideos]);
 
   return (
     <ThreadContainer>
@@ -80,7 +91,7 @@ export const MyDashboard: React.FC<MyDashboardProps> = ({
                   </div>
 
                   {/* Trending Videos */}
-                  <TrendingTechVideos />
+                  <TrendingTechVideos videos={videos.length > 0 ? videos : undefined} />
                 </div>
               )}
 
@@ -98,5 +109,13 @@ export const MyDashboard: React.FC<MyDashboardProps> = ({
         {showChat && <ChatSidebar />}
       </div>
     </ThreadContainer>
+  );
+}
+
+export const MyDashboard: React.FC<MyDashboardProps> = (props) => {
+  return (
+    <VideoProvider>
+      <DashboardContent {...props} />
+    </VideoProvider>
   );
 };
