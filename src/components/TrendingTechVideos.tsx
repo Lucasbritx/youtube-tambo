@@ -3,17 +3,7 @@ import { VideoCard } from './VideoCard';
 import { VideoGrid } from './VideoGrid';
 import { CategoryPill } from './CategoryPill';
 import { ChevronRight } from 'lucide-react';
-
-interface Video {
-  id: string;
-  rank: number;
-  thumbnail: string;
-  title: string;
-  channel: string;
-  views: string;
-  timeAgo: string;
-  rating: 'Excellent' | 'Good';
-}
+import { getTrendingVideos, type Video } from '@/services/youtube-videos';
 
 interface TrendingTechVideosProps {
   videos?: Video[];
@@ -22,99 +12,45 @@ interface TrendingTechVideosProps {
   onCategoryClick?: (category: string) => void;
 }
 
-// Sample data
-const defaultVideos: Video[] = [
-  {
-    id: '1',
-    rank: 1,
-    thumbnail: '/api/placeholder/400/225',
-    title: 'Why Replacing Developers with AI is...',
-    channel: 'MACKARD',
-    views: '2.0M views',
-    timeAgo: '1 weeks ago',
-    rating: 'Excellent'
-  },
-  {
-    id: '2',
-    rank: 2,
-    thumbnail: '/api/placeholder/400/225',
-    title: 'The wild rise of OpenClaw...',
-    channel: 'FIRESHIP',
-    views: '1.3M views',
-    timeAgo: '1 weeks ago',
-    rating: 'Excellent'
-  },
-  {
-    id: '3',
-    rank: 3,
-    thumbnail: '/api/placeholder/400/225',
-    title: 'A brief history of programming...',
-    channel: 'FIRESHIP',
-    views: '591K views',
-    timeAgo: '3 weeks ago',
-    rating: 'Excellent'
-  },
-  {
-    id: '4',
-    rank: 4,
-    thumbnail: '/api/placeholder/400/225',
-    title: "Claude Code's New Agent Teams Are...",
-    channel: 'BART SLODYCZKA',
-    views: '140K views',
-    timeAgo: '5 days ago',
-    rating: 'Excellent'
-  },
-  {
-    id: '5',
-    rank: 5,
-    thumbnail: '/api/placeholder/400/225',
-    title: "I Read Honey's Source Code",
-    channel: 'THE PRIMETIME',
-    views: '879K views',
-    timeAgo: '3 weeks ago',
-    rating: 'Excellent'
-  },
-  {
-    id: '6',
-    rank: 6,
-    thumbnail: '/api/placeholder/400/225',
-    title: 'Cursor Is Lying To Developers...',
-    channel: 'BASIC DEV',
-    views: '291K views',
-    timeAgo: '2 weeks ago',
-    rating: 'Excellent'
-  },
-  {
-    id: '7',
-    rank: 7,
-    thumbnail: '/api/placeholder/400/225',
-    title: 'Learning to code has changed',
-    channel: 'TECH WITH TIM',
-    views: '136K views',
-    timeAgo: '1 weeks ago',
-    rating: 'Excellent'
-  },
-  {
-    id: '8',
-    rank: 8,
-    thumbnail: '/api/placeholder/400/225',
-    title: 'The Best Place to Learn AI in 2026?...',
-    channel: 'JASON WEST',
-    views: '181K views',
-    timeAgo: '1 weeks ago',
-    rating: 'Good'
-  }
-];
-
 const defaultCategories = ['React', 'AI & ML', 'JavaScript', 'Tech Careers', 'Web Dev', 'Open Source'];
 
 export const TrendingTechVideos: React.FC<TrendingTechVideosProps> = ({
-  videos = defaultVideos,
+  videos: propVideos,
   categories = defaultCategories,
   onVideoClick,
   onCategoryClick
 }) => {
   const [selectedCategory, setSelectedCategory] = React.useState<string | null>(null);
+  const [videos, setVideos] = React.useState<Video[]>(propVideos || []);
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  // Fetch videos on component mount and when category changes
+  React.useEffect(() => {
+    if (propVideos) {
+      // If videos are provided as props, use those instead
+      setVideos(propVideos);
+      return;
+    }
+
+    const fetchVideos = async () => {
+      setIsLoading(true);
+      try {
+        const fetchedVideos = await getTrendingVideos({
+          category: selectedCategory || undefined,
+          limit: 8,
+          sortBy: 'views',
+          useRealApi: true // Force real API usage
+        });
+        setVideos(fetchedVideos);
+      } catch (error) {
+        console.error('Failed to fetch trending videos:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchVideos();
+  }, [selectedCategory, propVideos]);
 
   const handleCategoryClick = (category: string) => {
     setSelectedCategory(category === selectedCategory ? null : category);
@@ -146,19 +82,29 @@ export const TrendingTechVideos: React.FC<TrendingTechVideosProps> = ({
 
       {/* Video Grid */}
       <VideoGrid columns={4}>
-        {videos.map((video) => (
-          <VideoCard
-            key={video.id}
-            rank={video.rank}
-            thumbnail={video.thumbnail}
-            title={video.title}
-            channel={video.channel}
-            views={video.views}
-            timeAgo={video.timeAgo}
-            rating={video.rating}
-            onClick={() => onVideoClick?.(video.id)}
-          />
-        ))}
+        {isLoading ? (
+          <div className="col-span-4 flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        ) : videos.length === 0 ? (
+          <div className="col-span-4 text-center py-12 text-gray-500">
+            No videos found{selectedCategory ? ` for ${selectedCategory}` : ''}
+          </div>
+        ) : (
+          videos.map((video) => (
+            <VideoCard
+              key={video.id}
+              rank={video.rank}
+              thumbnail={video.thumbnail}
+              title={video.title}
+              channel={video.channel}
+              views={video.views}
+              timeAgo={video.timeAgo}
+              rating={video.rating}
+              onClick={() => onVideoClick?.(video.id)}
+            />
+          ))
+        )}
       </VideoGrid>
     </div>
   );
